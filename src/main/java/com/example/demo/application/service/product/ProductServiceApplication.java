@@ -28,6 +28,9 @@ public class ProductServiceApplication implements ProductsInterfacePortIn {
     @Override
 //    @CircuitBreaker(name = "productService", fallbackMethod = "createProductFallback")
     public Mono<Products> create(Products products) {
+        System.out.println("----------------------------------------------------------");
+        System.out.println("Creating product: " + products);
+        System.out.println("----------------------------------------------------------");
         return Mono.fromCallable(() -> {
                     productValidator.validateCommon(products);
                     return products;
