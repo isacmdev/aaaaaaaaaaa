@@ -26,7 +26,7 @@ public class ProductServiceApplication implements ProductsInterfacePortIn {
     private final ProductServiceFallbacks productServiceFallbacks;
 
     @Override
-    @CircuitBreaker(name = "productService", fallbackMethod = "createProductFallback")
+//    @CircuitBreaker(name = "productService", fallbackMethod = "createProductFallback")
     public Mono<Products> create(Products products) {
         return Mono.fromCallable(() -> {
                     productValidator.validateCommon(products);
@@ -42,14 +42,14 @@ public class ProductServiceApplication implements ProductsInterfacePortIn {
     }
 
     @Override
-    @CircuitBreaker(name = "productService", fallbackMethod = "getAllProductsFallback")
+//    @CircuitBreaker(name = "productService", fallbackMethod = "getAllProductsFallback")
     public Flux<Products> getAll() {
         return productsInterfacePortOut.findAll()
                 .onErrorMap(e -> new UseCaseException(ProductErrorMessage.FIND_ALL_ERROR));
     }
 
     @Override
-    @CircuitBreaker(name = "productService", fallbackMethod = "getByIdFallback")
+//    @CircuitBreaker(name = "productService", fallbackMethod = "getByIdFallback")
     public Mono<Products> getById(Long id) {
         return productsCachePortOut.getById(id)
                 .switchIfEmpty(Mono.defer(() ->
@@ -64,7 +64,7 @@ public class ProductServiceApplication implements ProductsInterfacePortIn {
     }
 
     @Override
-    @CircuitBreaker(name = "productService", fallbackMethod = "updateProductFallback")
+//    @CircuitBreaker(name = "productService", fallbackMethod = "updateProductFallback")
     public Mono<Products> update(Long id, Products products) {
         return Mono.just(products)
                 .doOnNext(productValidator::validateCommon)
@@ -81,7 +81,7 @@ public class ProductServiceApplication implements ProductsInterfacePortIn {
     }
 
     @Override
-    @CircuitBreaker(name = "productService", fallbackMethod = "deleteProductFallback")
+//    @CircuitBreaker(name = "productService", fallbackMethod = "deleteProductFallback")
     public Mono<Void> delete(Long id) {
         return productsInterfacePortOut.delete(id)
                 .doOnSuccess(v -> productsCachePortOut.evictById(id).subscribe())
@@ -89,7 +89,7 @@ public class ProductServiceApplication implements ProductsInterfacePortIn {
     }
 
     @Override
-    @CircuitBreaker(name = "productService", fallbackMethod = "addStockFallback")
+//    @CircuitBreaker(name = "productService", fallbackMethod = "addStockFallback")
     public Mono<Products> addStock(Long id, Integer quantity) {
         if (quantity <= 0) {
             return Mono.error(new IllegalArgumentException("La cantidad debe ser mayor a cero"));
@@ -109,7 +109,7 @@ public class ProductServiceApplication implements ProductsInterfacePortIn {
     }
 
     @Override
-    @CircuitBreaker(name = "productService", fallbackMethod = "removeStockFallback")
+//    @CircuitBreaker(name = "productService", fallbackMethod = "removeStockFallback")
     public Mono<Products> removeStock(Long id, Integer quantity) {
         if (quantity <= 0) {
             return Mono.error(new IllegalArgumentException("La cantidad debe ser mayor a cero"));
@@ -132,7 +132,7 @@ public class ProductServiceApplication implements ProductsInterfacePortIn {
     }
 
     @Override
-    @CircuitBreaker(name = "productService", fallbackMethod = "getAllPagedFallback")
+//    @CircuitBreaker(name = "productService", fallbackMethod = "getAllPagedFallback")
     public Mono<Page<Products>> getAllPaged(int page, int size) {
         if (page < 0) page = 0;
         if (size <= 0) size = 50;
