@@ -2,7 +2,6 @@ package com.example.demo.infrastructure.routerhanlder.product;
 
 import com.example.demo.domain.entity.product.Products;
 import com.example.demo.domain.port.in.product.ProductsInterfacePortIn;
-import com.example.demo.infrastructure.dto.error.ErrorResponse;
 import com.example.demo.infrastructure.dto.request.ProductRequestDto;
 import com.example.demo.infrastructure.dto.request.StockUpdateRequestDto;
 import com.example.demo.infrastructure.dto.response.PaginatedResponse;
