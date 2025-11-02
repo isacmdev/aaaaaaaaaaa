@@ -7,6 +7,7 @@ import com.example.demo.application.ex.validator.ProductValidator;
 import com.example.demo.application.fallbacks.ProductServiceFallbacks;
 import com.example.demo.domain.entity.product.Page;
 import com.example.demo.domain.entity.product.Products;
+import com.example.demo.domain.port.in.inventory.InventoryProductInterfacePortIn;
 import com.example.demo.domain.port.in.product.ProductsInterfacePortIn;
 import com.example.demo.domain.port.out.product.ProductsInterfacePortOut;
 import com.example.demo.domain.port.out.redis.ProductsCachePortOut;
@@ -24,6 +25,7 @@ public class ProductServiceApplication implements ProductsInterfacePortIn {
     private final ProductsCachePortOut productsCachePortOut;
     private final ProductValidator productValidator;
     private final ProductServiceFallbacks productServiceFallbacks;
+    private final InventoryProductInterfacePortIn inventoryProductInterfacePortIn;
 
     @Override
     @CircuitBreaker(name = "productService", fallbackMethod = "createProductFallback")
@@ -54,13 +56,38 @@ public class ProductServiceApplication implements ProductsInterfacePortIn {
         return productsCachePortOut.getById(id)
                 .switchIfEmpty(Mono.defer(() ->
                         productsInterfacePortOut.findById(id)
-                                .flatMap(productFromDb ->
-                                        productFromDb != null
-                                                ? productsCachePortOut.putById(productFromDb).thenReturn(productFromDb)
-                                                : Mono.empty()
-                                )
+                                .flatMap(productFromDb -> {
+                                    if (productFromDb != null) {
+                                        return syncStockWithInventory(productFromDb)
+                                                .flatMap(updatedProduct ->
+                                                        productsCachePortOut.putById(updatedProduct).thenReturn(updatedProduct)
+                                                );
+                                    }
+                                    return Mono.empty();
+                                })
                 ))
                 .switchIfEmpty(Mono.error(new UseCaseException(ProductErrorMessage.FIND_BY_ID_ERROR)));
+    }
+
+    private Mono<Products> syncStockWithInventory(Products product) {
+        if (product.getInternalCode() == null) {
+            return Mono.just(product);
+        }
+
+        return inventoryProductInterfacePortIn.getProductByInternalCode(product.getInternalCode())
+                .flatMap(inventoryProduct -> {
+                    if (!inventoryProduct.getStock().equals(product.getStock())) {
+
+                        Products updatedProduct = product.toBuilder()
+                                .stock(inventoryProduct.getStock())
+                                .build();
+
+                        return productsInterfacePortOut.update(product.getId(), updatedProduct);
+                    }
+                    return Mono.just(product);
+                })
+                .defaultIfEmpty(product)
+                .onErrorReturn(product);
     }
 
     @Override
