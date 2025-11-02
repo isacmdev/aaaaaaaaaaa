@@ -12,7 +12,5 @@ public interface ProductsInterfacePortOut {
     Mono<Products> update(Long id, Products products);
     Mono<Void> delete(Long id);
     Mono<Page<Products>> findAllPaged(int page, int size);
-    Mono<Products> addStock(Long id, Integer quantity);
-    Mono<Products> removeStock(Long id, Integer quantity);
     Mono<Long> countAll();
 }

@@ -36,14 +36,6 @@ public class ProductServiceFallbacks {
         return Mono.error(new UseCaseException("Servicio no disponible. No se pudo eliminar el producto."));
     }
 
-    public Mono<Products> addStockFallback(Long id, Integer quantity, Exception e) {
-        return Mono.error(new UseCaseException("Servicio no disponible. No se pudo agregar stock."));
-    }
-
-    public Mono<Products> removeStockFallback(Long id, Integer quantity, Exception e) {
-        return Mono.error(new UseCaseException("Servicio no disponible. No se pudo remover stock."));
-    }
-
     public Mono<Page<Products>> getAllPagedFallback(int page, int size, Exception e) {
         return Mono.error(new UseCaseException("Servicio no disponible. No se pudieron obtener los productos paginados."));
     }

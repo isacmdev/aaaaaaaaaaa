@@ -11,8 +11,6 @@ public interface ProductsInterfacePortIn {
     Mono<Products> getById(Long id);
     Mono<Products> update(Long id, Products products);
     Mono<Void> delete(Long id);
-    Mono<Products> addStock(Long id, Integer quantity);
-    Mono<Products> removeStock(Long id, Integer quantity);
 
     Mono<Page<Products>> getAllPaged(int page, int size);
 }

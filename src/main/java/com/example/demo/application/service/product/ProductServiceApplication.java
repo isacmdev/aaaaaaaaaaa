@@ -89,49 +89,6 @@ public class ProductServiceApplication implements ProductsInterfacePortIn {
     }
 
     @Override
-    @CircuitBreaker(name = "productService", fallbackMethod = "addStockFallback")
-    public Mono<Products> addStock(Long id, Integer quantity) {
-        if (quantity <= 0) {
-            return Mono.error(new IllegalArgumentException("La cantidad debe ser mayor a cero"));
-        }
-
-        return productsInterfacePortOut.findById(id)
-                .switchIfEmpty(Mono.error(new UseCaseException(ProductErrorMessage.PRODUCT_NOT_FOUND)))
-                .flatMap(product -> {
-                    product.setStock(product.getStock() + quantity);
-                    return productsInterfacePortOut.update(id, product)
-                            .doOnSuccess(updatedProduct -> {
-                                productsCachePortOut.evictById(id).subscribe();
-                                productsCachePortOut.putById(updatedProduct).subscribe();
-                            });
-                })
-                .onErrorResume(e -> Mono.error(new UseCaseException(ProductErrorMessage.ADD_STOCK_ERROR)));
-    }
-
-    @Override
-    @CircuitBreaker(name = "productService", fallbackMethod = "removeStockFallback")
-    public Mono<Products> removeStock(Long id, Integer quantity) {
-        if (quantity <= 0) {
-            return Mono.error(new IllegalArgumentException("La cantidad debe ser mayor a cero"));
-        }
-
-        return productsInterfacePortOut.findById(id)
-                .switchIfEmpty(Mono.error(new UseCaseException(ProductErrorMessage.PRODUCT_NOT_FOUND)))
-                .flatMap(product -> {
-                    if (product.getStock() < quantity) {
-                        return Mono.error(new UseCaseException(ProductErrorMessage.INVALID_STOCK_OPERATION));
-                    }
-                    product.setStock(product.getStock() - quantity);
-                    return productsInterfacePortOut.update(id, product)
-                            .doOnSuccess(updatedProduct -> {
-                                productsCachePortOut.evictById(id).subscribe();
-                                productsCachePortOut.putById(updatedProduct).subscribe();
-                            });
-                })
-                .onErrorResume(e -> Mono.error(new UseCaseException(ProductErrorMessage.REMOVE_STOCK_ERROR)));
-    }
-
-    @Override
     @CircuitBreaker(name = "productService", fallbackMethod = "getAllPagedFallback")
     public Mono<Page<Products>> getAllPaged(int page, int size) {
         if (page < 0) page = 0;
@@ -163,14 +120,6 @@ public class ProductServiceApplication implements ProductsInterfacePortIn {
 
     public Mono<Void> deleteProductFallback(Long id, Exception e) {
         return productServiceFallbacks.deleteProductFallback(id, e);
-    }
-
-    public Mono<Products> addStockFallback(Long id, Integer quantity, Exception e) {
-        return productServiceFallbacks.addStockFallback(id, quantity, e);
-    }
-
-    public Mono<Products> removeStockFallback(Long id, Integer quantity, Exception e) {
-        return productServiceFallbacks.removeStockFallback(id, quantity, e);
     }
 
     public Mono<Page<Products>> getAllPagedFallback(int page, int size, Exception e) {

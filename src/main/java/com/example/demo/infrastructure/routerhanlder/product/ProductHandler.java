@@ -92,35 +92,4 @@ public class ProductHandler {
         return productsInterfacePortIn.delete(id)
                 .then(ServerResponse.noContent().build());
     }
-
-    public Mono<ServerResponse> addStock(ServerRequest request) {
-        Long id = Long.valueOf(request.pathVariable("id"));
-
-        return request.bodyToMono(StockUpdateRequestDto.class)
-                .flatMap(stockRequest ->
-                        productsInterfacePortIn.addStock(id, stockRequest.getQuantity())
-                )
-                .map(ProductMapperDto::toResponse)
-                .flatMap(productDto ->
-                        ServerResponse.ok()
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .bodyValue(productDto)
-                );
-    }
-
-    public Mono<ServerResponse> removeStock(ServerRequest request) {
-        Long id = Long.valueOf(request.pathVariable("id"));
-
-        return request.bodyToMono(StockUpdateRequestDto.class)
-                .flatMap(stockRequest ->
-                        productsInterfacePortIn.removeStock(id, stockRequest.getQuantity())
-                )
-                .map(ProductMapperDto::toResponse)
-                .flatMap(productDto ->
-                        ServerResponse.ok()
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .bodyValue(productDto)
-                );
-    }
-
 }

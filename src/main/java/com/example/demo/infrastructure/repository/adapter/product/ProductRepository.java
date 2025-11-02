@@ -56,8 +56,8 @@ public class ProductRepository implements ProductsInterfacePortOut {
                             .description(products.getDescription() != null ? products.getDescription() : existingProduct.getDescription())
                             .images(products.getImages() != null ? products.getImages().toString() : existingProduct.getImages())
                             .price(products.getPrice() != null ? products.getPrice() : existingProduct.getPrice())
-                            .stock(products.getStock() != null ? products.getStock() : existingProduct.getStock())
-                            .internalCode(products.getInternalCode() != null ? products.getInternalCode() : existingProduct.getInternalCode())
+                            .stock(existingProduct.getStock())
+                            .internalCode(existingProduct.getInternalCode())
                             .createdAt(existingProduct.getCreatedAt())
                             .updatedAt(LocalDateTime.now())
                             .build();
@@ -90,44 +90,6 @@ public class ProductRepository implements ProductsInterfacePortOut {
                             .build();
                 })
                 .onErrorMap(e -> new DatabaseException(ProductDatabaseErrorMessage.FIND_ALL_ERROR));
-    }
-
-    @Override
-    public Mono<Products> addStock(Long id, Integer quantity) {
-        return productRepositoryR2dbc.findById(id)
-                .switchIfEmpty(Mono.error(new DatabaseException(ProductDatabaseErrorMessage.FIND_BY_ID_ERROR)))
-                .flatMap(product -> {
-                    int newStock = product.getStock() + quantity;
-                    ProductEntityDB updatedProduct = product.toBuilder()
-                            .stock(newStock)
-                            .updatedAt(LocalDateTime.now())
-                            .build();
-
-                    return productRepositoryR2dbc.save(updatedProduct);
-                })
-                .map(ProductMapperEntityDB::toDomain)
-                .onErrorMap(e -> new DatabaseException(ProductDatabaseErrorMessage.ADD_STOCK_ERROR));
-    }
-
-    @Override
-    public Mono<Products> removeStock(Long id, Integer quantity) {
-        return productRepositoryR2dbc.findById(id)
-                .switchIfEmpty(Mono.error(new DatabaseException(ProductDatabaseErrorMessage.FIND_BY_ID_ERROR)))
-                .flatMap(product -> {
-                    if (product.getStock() < quantity) {
-                        return Mono.error(new DatabaseException("No hay suficiente stock disponible"));
-                    }
-
-                    int newStock = product.getStock() - quantity;
-                    ProductEntityDB updatedProduct = product.toBuilder()
-                            .stock(newStock)
-                            .updatedAt(LocalDateTime.now())
-                            .build();
-
-                    return productRepositoryR2dbc.save(updatedProduct);
-                })
-                .map(ProductMapperEntityDB::toDomain)
-                .onErrorMap(e -> new DatabaseException(ProductDatabaseErrorMessage.REMOVE_STOCK_ERROR));
     }
 
     @Override

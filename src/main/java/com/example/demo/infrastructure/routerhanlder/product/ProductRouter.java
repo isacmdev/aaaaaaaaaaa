@@ -227,108 +227,6 @@ public class ProductRouter {
                                     )
                             }
                     )
-            ),
-            @RouterOperation(
-                    path = BASE_PATH + "/{id}/add-stock",
-                    method = RequestMethod.PATCH,
-                    operation = @Operation(
-                            operationId = "Add stock to product",
-                            summary = "Endpoint para agregar stock a un producto",
-                            description = "Endpoint para incrementar el stock de un producto específico",
-                            tags = {"Product Router"},
-                            requestBody = @RequestBody(
-                                    required = true,
-                                    content = @Content(
-                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = StockUpdateRequestDto.class)
-                                    )
-                            ),
-                            responses = {
-                                    @ApiResponse(
-                                            responseCode = "200",
-                                            description = "Stock agregado exitosamente",
-                                            content = @Content(
-                                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                                    schema = @Schema(implementation = ProductResponseDto.class)
-                                            )
-                                    ),
-                                    @ApiResponse(
-                                            responseCode = "400",
-                                            description = "Solicitud inválida - cantidad debe ser mayor a cero",
-                                            content = @Content(
-                                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                                    schema = @Schema(implementation = ErrorResponse.class)
-                                            )
-                                    ),
-                                    @ApiResponse(
-                                            responseCode = "404",
-                                            description = "Producto no encontrado",
-                                            content = @Content(
-                                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                                    schema = @Schema(implementation = ErrorResponse.class)
-                                            )
-                                    ),
-                                    @ApiResponse(
-                                            responseCode = "500",
-                                            description = "Error interno del servidor",
-                                            content = @Content(
-                                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                                    schema = @Schema(implementation = ErrorResponse.class)
-                                            )
-                                    )
-                            }
-                    )
-            ),
-            @RouterOperation(
-                    path = BASE_PATH + "/{id}/remove-stock",
-                    method = RequestMethod.PATCH,
-                    operation = @Operation(
-                            operationId = "Remove stock from product",
-                            summary = "Endpoint para remover stock de un producto",
-                            description = "Endpoint para reducir el stock de un producto específico",
-                            tags = {"Product Router"},
-                            requestBody = @RequestBody(
-                                    required = true,
-                                    content = @Content(
-                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = StockUpdateRequestDto.class)
-                                    )
-                            ),
-                            responses = {
-                                    @ApiResponse(
-                                            responseCode = "200",
-                                            description = "Stock removido exitosamente",
-                                            content = @Content(
-                                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                                    schema = @Schema(implementation = ProductResponseDto.class)
-                                            )
-                                    ),
-                                    @ApiResponse(
-                                            responseCode = "400",
-                                            description = "Solicitud inválida - cantidad insuficiente o inválida",
-                                            content = @Content(
-                                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                                    schema = @Schema(implementation = ErrorResponse.class)
-                                            )
-                                    ),
-                                    @ApiResponse(
-                                            responseCode = "404",
-                                            description = "Producto no encontrado",
-                                            content = @Content(
-                                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                                    schema = @Schema(implementation = ErrorResponse.class)
-                                            )
-                                    ),
-                                    @ApiResponse(
-                                            responseCode = "500",
-                                            description = "Error interno del servidor",
-                                            content = @Content(
-                                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                                    schema = @Schema(implementation = ErrorResponse.class)
-                                            )
-                                    )
-                            }
-                    )
             )
     })
     public RouterFunction<ServerResponse> productRoutes(ProductHandler productHandler) {
@@ -338,8 +236,6 @@ public class ProductRouter {
                 .GET(BASE_PATH + "/{id}", productHandler::getProductById)
                 .PUT(BASE_PATH + "/update/{id}", productHandler::updateProduct)
                 .DELETE(BASE_PATH + "/delete/{id}", productHandler::deleteProduct)
-                .PATCH(BASE_PATH + "/{id}/add-stock", productHandler::addStock)
-                .PATCH(BASE_PATH + "/{id}/remove-stock", productHandler::removeStock)
                 .build();
     }
 }
