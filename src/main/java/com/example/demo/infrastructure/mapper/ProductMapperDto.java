@@ -17,6 +17,8 @@ public class ProductMapperDto {
 
         return Products.builder()
                 .name(request.getName())
+                .category(request.getCategory())
+                .internalCode(request.getInternalCode())
                 .description(request.getDescription())
                 .images(request.getImages())
                 .price(request.getPrice())
@@ -31,7 +33,9 @@ public class ProductMapperDto {
 
         return ProductResponseDto.builder()
                 .id(domain.getId())
+                .internalCode(domain.getInternalCode())
                 .name(domain.getName())
+                .category(domain.getCategory())
                 .description(domain.getDescription())
                 .images(domain.getImages())
                 .price(domain.getPrice())

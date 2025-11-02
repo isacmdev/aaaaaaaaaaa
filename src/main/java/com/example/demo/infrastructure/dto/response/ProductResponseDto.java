@@ -1,5 +1,6 @@
 package com.example.demo.infrastructure.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +15,9 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductResponseDto {
     private Long id;
+    private String internalCode;
     private String name;
+    private String category;
     private String description;
     private List<String> images;
     private Double price;

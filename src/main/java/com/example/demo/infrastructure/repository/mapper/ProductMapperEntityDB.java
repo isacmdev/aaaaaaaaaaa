@@ -27,7 +27,9 @@ public class ProductMapperEntityDB {
 
         return ProductEntityDB.builder()
                 .id(product.getId())
+                .internalCode(product.getInternalCode())
                 .name(product.getName())
+                .category(product.getCategory())
                 .description(product.getDescription())
                 .images(imagesJson)
                 .price(product.getPrice())
@@ -53,7 +55,9 @@ public class ProductMapperEntityDB {
 
         return Products.builder()
                 .id(entity.getId())
+                .internalCode(entity.getInternalCode())
                 .name(entity.getName())
+                .category(entity.getCategory())
                 .description(entity.getDescription())
                 .images(imagesList)
                 .price(entity.getPrice())

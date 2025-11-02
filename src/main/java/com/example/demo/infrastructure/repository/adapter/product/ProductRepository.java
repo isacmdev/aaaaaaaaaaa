@@ -50,9 +50,14 @@ public class ProductRepository implements ProductsInterfacePortOut {
         return productRepositoryR2dbc.findById(id)
                 .switchIfEmpty(Mono.error(new DatabaseException(ProductDatabaseErrorMessage.FIND_BY_ID_ERROR)))
                 .flatMap(existingProduct -> {
-                    ProductEntityDB updatedEntity = ProductMapperEntityDB.toEntityDB(products)
-                            .toBuilder()
-                            .id(existingProduct.getId())
+                    ProductEntityDB updatedEntity = existingProduct.toBuilder()
+                            .name(products.getName())
+                            .category(products.getCategory())
+                            .description(products.getDescription())
+                            .images(products.getImages().toString())
+                            .price(products.getPrice())
+                            .internalCode(existingProduct.getInternalCode())
+                            .stock(existingProduct.getStock())
                             .createdAt(existingProduct.getCreatedAt())
                             .updatedAt(LocalDateTime.now())
                             .build();

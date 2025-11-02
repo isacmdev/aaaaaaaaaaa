@@ -15,32 +15,61 @@ public class ProductValidator {
             throw new MissingRequiredException("El producto no puede ser nulo.");
         }
 
-        if (!StringUtils.hasText(product.getName())) {
+        validateName(product.getName());
+        validateCategory(product.getCategory());
+        validateInternalCode(product.getInternalCode());
+        validateDescription(product.getDescription());
+        validatePrice(product.getPrice());
+        validateStock(product.getStock());
+        validateImages(product.getImages());
+    }
+
+    private void validateName(String name) {
+        if (!StringUtils.hasText(name)) {
             throw new MissingRequiredException("El nombre del producto es obligatorio y no puede estar vacío.");
         }
-
-        if (product.getName().length() > 255) {
+        if (name.length() > 255) {
             throw new MissingRequiredException("El nombre del producto no puede superar los 255 caracteres.");
         }
+    }
 
-        if (!StringUtils.hasText(product.getDescription())) {
-            throw new MissingRequiredException("La descripcion del producto es obligatoria y no puede estar vacía.");
+    private void validateCategory(String category) {
+        if (!StringUtils.hasText(category)) {
+            throw new MissingRequiredException("La categoría no puede estar vacía.");
         }
+        if (category.length() > 150) {
+            throw new MissingRequiredException("La categoría del producto no puede superar los 150 caracteres.");
+        }
+    }
 
-        if (product.getDescription() != null && product.getDescription().length() > 1000) {
+    private void validateInternalCode(String internalCode) {
+        if (!StringUtils.hasText(internalCode)) {
+            throw new MissingRequiredException("El código interno del producto es obligatorio y no puede estar vacío.");
+        }
+    }
+
+    private void validateDescription(String description) {
+        if (!StringUtils.hasText(description)) {
+            throw new MissingRequiredException("La descripción del producto es obligatoria y no puede estar vacía.");
+        }
+        if (description.length() > 1000) {
             throw new MissingRequiredException("La descripción no puede superar los 1000 caracteres.");
         }
+    }
 
-        if (product.getPrice() == null || product.getPrice() <= 0) {
+    private void validatePrice(Double price) {
+        if (price == null || price <= 0) {
             throw new MissingRequiredException("El precio debe ser un valor positivo.");
         }
+    }
 
-        if (product.getStock() <= 0) {
+    private void validateStock(Integer stock) {
+        if (stock == null || stock < 0) {
             throw new MissingRequiredException("El stock no puede ser menor que 0.");
         }
+    }
 
-        List<String> images = product.getImages();
-
+    private void validateImages(List<String> images) {
         if (images == null || images.isEmpty()) {
             throw new MissingRequiredException("Se requiere al menos una imagen para el producto.");
         }

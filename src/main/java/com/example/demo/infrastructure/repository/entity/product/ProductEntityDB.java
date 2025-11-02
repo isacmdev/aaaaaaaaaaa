@@ -21,8 +21,14 @@ public class ProductEntityDB {
     @Column("id")
     private Long id;
 
+    @Column("internal_code")
+    private String internalCode;
+
     @Column("name")
     private String name;
+
+    @Column("category")
+    private String category;
 
     @Column("description")
     private String description;

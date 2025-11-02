@@ -14,7 +14,9 @@ import java.util.List;
 @AllArgsConstructor
 public class Products {
     private Long id;
+    private String internalCode;
     private String name;
+    private String category;
     private String description;
     private List<String> images;
     private Double price;

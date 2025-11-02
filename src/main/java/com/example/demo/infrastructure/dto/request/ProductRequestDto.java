@@ -17,6 +17,12 @@ public class ProductRequestDto {
     @JsonProperty("name")
     private String name;
 
+    @JsonProperty("category")
+    private String category;
+
+    @JsonProperty("internal_code")
+    private String internalCode;
+
     @JsonProperty("description")
     private String description;
 
