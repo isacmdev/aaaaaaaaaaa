@@ -22,6 +22,7 @@ public class ProductRepository implements ProductsInterfacePortOut {
 
     @Override
     public Mono<Products> save(Products products) {
+        System.out.println("Saving product: " + products);
         LocalDateTime currentDate = LocalDateTime.now();
         products.setCreatedAt(currentDate);
 
