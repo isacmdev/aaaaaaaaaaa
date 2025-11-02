@@ -22,7 +22,6 @@ public class ProductRepository implements ProductsInterfacePortOut {
 
     @Override
     public Mono<Products> save(Products products) {
-        System.out.println("Saving product: " + products);
         LocalDateTime currentDate = LocalDateTime.now();
         products.setCreatedAt(currentDate);
 
@@ -52,13 +51,13 @@ public class ProductRepository implements ProductsInterfacePortOut {
                 .switchIfEmpty(Mono.error(new DatabaseException(ProductDatabaseErrorMessage.FIND_BY_ID_ERROR)))
                 .flatMap(existingProduct -> {
                     ProductEntityDB updatedEntity = existingProduct.toBuilder()
-                            .name(products.getName())
-                            .category(products.getCategory())
-                            .description(products.getDescription())
-                            .images(products.getImages().toString())
-                            .price(products.getPrice())
-                            .internalCode(existingProduct.getInternalCode())
-                            .stock(existingProduct.getStock())
+                            .name(products.getName() != null ? products.getName() : existingProduct.getName())
+                            .category(products.getCategory() != null ? products.getCategory() : existingProduct.getCategory())
+                            .description(products.getDescription() != null ? products.getDescription() : existingProduct.getDescription())
+                            .images(products.getImages() != null ? products.getImages().toString() : existingProduct.getImages())
+                            .price(products.getPrice() != null ? products.getPrice() : existingProduct.getPrice())
+                            .stock(products.getStock() != null ? products.getStock() : existingProduct.getStock())
+                            .internalCode(products.getInternalCode() != null ? products.getInternalCode() : existingProduct.getInternalCode())
                             .createdAt(existingProduct.getCreatedAt())
                             .updatedAt(LocalDateTime.now())
                             .build();
