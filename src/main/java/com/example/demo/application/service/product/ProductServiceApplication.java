@@ -73,11 +73,9 @@ public class ProductServiceApplication implements ProductsInterfacePortIn {
         if (product.getInternalCode() == null) {
             return Mono.just(product);
         }
-
         return inventoryProductInterfacePortIn.getProductByInternalCode(product.getInternalCode())
                 .flatMap(inventoryProduct -> {
                     if (!inventoryProduct.getStock().equals(product.getStock())) {
-
                         Products updatedProduct = product.toBuilder()
                                 .stock(inventoryProduct.getStock())
                                 .build();
