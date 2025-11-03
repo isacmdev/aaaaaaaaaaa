@@ -53,19 +53,11 @@ public class ProductServiceApplication implements ProductsInterfacePortIn {
     @Override
     @CircuitBreaker(name = "productService", fallbackMethod = "getByIdFallback")
     public Mono<Products> getById(Long id) {
-        return productsCachePortOut.getById(id)
-                .switchIfEmpty(Mono.defer(() ->
-                        productsInterfacePortOut.findById(id)
-                                .flatMap(productFromDb -> {
-                                    if (productFromDb != null) {
-                                        return syncStockWithInventory(productFromDb)
-                                                .flatMap(updatedProduct ->
-                                                        productsCachePortOut.putById(updatedProduct).thenReturn(updatedProduct)
-                                                );
-                                    }
-                                    return Mono.empty();
-                                })
-                ))
+        return productsInterfacePortOut.findById(id)
+                .switchIfEmpty(Mono.error(new UseCaseException(ProductErrorMessage.FIND_BY_ID_ERROR)))
+                .flatMap(productFromDb -> syncStockWithInventory(productFromDb)
+                        .flatMap(updatedProduct -> productsCachePortOut.putById(updatedProduct)
+                                .thenReturn(updatedProduct)))
                 .switchIfEmpty(Mono.error(new UseCaseException(ProductErrorMessage.FIND_BY_ID_ERROR)));
     }
 
