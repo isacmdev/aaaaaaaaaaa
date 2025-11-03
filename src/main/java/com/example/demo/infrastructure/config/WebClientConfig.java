@@ -10,7 +10,7 @@ public class WebClientConfig {
     @Bean
     public WebClient webClient() {
         return WebClient.builder()
-                .baseUrl("http://localhost:8084")
+                .baseUrl("http://host.docker.internal:8084")
                 .build();
     }
 }
