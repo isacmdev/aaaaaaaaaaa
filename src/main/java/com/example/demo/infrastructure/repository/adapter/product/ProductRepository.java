@@ -57,7 +57,6 @@ public class ProductRepository implements ProductsInterfacePortOut {
                             .images(products.getImages() != null ? products.getImages().toString() : existingProduct.getImages())
                             .price(products.getPrice() != null ? products.getPrice() : existingProduct.getPrice())
                             .stock(products.getStock() != null ? products.getStock() : existingProduct.getStock())
-                            .internalCode(existingProduct.getInternalCode())
                             .createdAt(existingProduct.getCreatedAt())
                             .updatedAt(LocalDateTime.now())
                             .build();
